@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: selenium-hub
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: selenium-hub
+  template:
+    metadata:
+      labels:
+        app: selenium-hub
+    spec:
+      containers:
+      - name: selenium-hub
+        image: raktimtech1989/selenium-hub
+        ports:
+        - containerPort: 4444
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: selenium-hub
+spec:
+  selector:
+    app: selenium-hub
+  ports:
+  - name: selenium
+    port: 4444
+    targetPort: 4444
+  type: NodePort

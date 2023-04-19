@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-tests
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-tests
+  template:
+    metadata:
+      labels:
+        app: my-tests
+    spec:
+      containers:
+      - name: my-tests
+        image: raktimtech1989/my-tests
+        env:
+        - name: HUB_HOST
+          value: "selenium-hub"
+        - name: HUB_PORT
+          value: "4444"
+        command: ["sh", "-c", "java -cp selenium-server-standalone-3.141.59.jar:. org.testng.TestNG /app/testng.xml"]
+        volumeMounts:
+        - name: testng-xml
+          mountPath: /app/testng.xml
+          subPath: testng.xml
+      volumes:
+      - name: testng-xml
+        configMap:
+          name: my-tests-config
+          items:
+          - key: testng.xml
+            path: testng.xml
